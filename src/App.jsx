@@ -3,7 +3,7 @@ import './App.css'
 
 function App() {
   const [inputText, setInputText] = useState("");
-  const [suggestions, setSuggestions] = useState("");
+  const [suggestion, setSuggestion] = useState("");
 
   const customDictionary = {
     teh: "the",
@@ -14,31 +14,41 @@ function App() {
 
   useEffect(() => {
     if (!inputText.trim()) {
-      setSuggestions("");
+      setSuggestion("");
       return;
     }
 
     const words = inputText.split(" ");
-    const newSuggestions = words.map(word => customDictionary[word] || word);
-    setSuggestions(newSuggestions.join(" "));
+
+    // Normalize case (case-insensitive)
+    const correctedWords = words.map(word => {
+      const lower = word.toLowerCase();
+      return customDictionary[lower] || word;
+    });
+
+    // Only show suggestion if something actually changed
+    if (correctedWords.join(" ") !== inputText) {
+      setSuggestion(correctedWords.join(" "));
+    } else {
+      setSuggestion("");
+    }
   }, [inputText]);
 
   return (
-    <>
-      <div className="spell-check-container">
-        <h2>Spell Check and Auto-Correction</h2>
-        <textarea
-          cols="30"
-          rows="10"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-        />
-        <br />
-        {suggestions && inputText !== suggestions && (
-          <span>✨ Did you mean: <b>{suggestions}</b></span>
-        )}
-      </div>
-    </>
+    <div className="spell-check-container">
+      <h2>Spell Check and Auto-Correction</h2>
+      <textarea
+        cols="30"
+        rows="10"
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+      />
+      <br />
+
+      {suggestion && (
+        <span>Did you mean: {suggestion}?</span>
+      )}
+    </div>
   )
 }
 
