@@ -20,23 +20,16 @@ function App() {
 
     const words = inputText.trim().split(/\s+/);
 
-    const correctedWords = words.map(word => {
+    for (let word of words) {
       const lower = word.toLowerCase();
-      return customDictionary[lower] || word;
-    });
-
-    // Only update if something changed
-    if (correctedWords.join(" ").toLowerCase() !== inputText.trim().toLowerCase()) {
-      if (words.length === 1) {
-        // Single word → suggest just the corrected word
-        setSuggestion(correctedWords[0]);
-      } else {
-        // Multiple words → suggest full corrected sentence
-        setSuggestion(correctedWords.join(" "));
+      if (customDictionary[lower]) {
+        // Only suggest the corrected word (first match only)
+        setSuggestion(customDictionary[lower]);
+        return;
       }
-    } else {
-      setSuggestion("");
     }
+
+    setSuggestion(""); // no misspelling found
   }, [inputText]);
 
   return (
