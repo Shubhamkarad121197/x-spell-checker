@@ -18,16 +18,16 @@ function App() {
       return;
     }
 
-    const words = inputText.split(" ");
+    // Normalize multiple spaces
+    const words = inputText.trim().split(/\s+/);
 
-    // Normalize case (case-insensitive)
     const correctedWords = words.map(word => {
       const lower = word.toLowerCase();
       return customDictionary[lower] || word;
     });
 
-    // Only show suggestion if something actually changed
-    if (correctedWords.join(" ") !== inputText) {
+    // Compare ignoring case + trimming
+    if (correctedWords.join(" ").toLowerCase() !== inputText.trim().toLowerCase()) {
       setSuggestion(correctedWords.join(" "));
     } else {
       setSuggestion("");
@@ -46,7 +46,7 @@ function App() {
       <br />
 
       {suggestion && (
-        <span>Did you mean: {suggestion}?</span>
+        <span className="suggestion-text">Did you mean: {suggestion}?</span>
       )}
     </div>
   )
