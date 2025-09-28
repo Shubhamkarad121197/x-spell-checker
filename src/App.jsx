@@ -18,7 +18,6 @@ function App() {
       return;
     }
 
-    // Normalize multiple spaces
     const words = inputText.trim().split(/\s+/);
 
     const correctedWords = words.map(word => {
@@ -26,9 +25,15 @@ function App() {
       return customDictionary[lower] || word;
     });
 
-    // Compare ignoring case + trimming
+    // Only update if something changed
     if (correctedWords.join(" ").toLowerCase() !== inputText.trim().toLowerCase()) {
-      setSuggestion(correctedWords.join(" "));
+      if (words.length === 1) {
+        // Single word → suggest just the corrected word
+        setSuggestion(correctedWords[0]);
+      } else {
+        // Multiple words → suggest full corrected sentence
+        setSuggestion(correctedWords.join(" "));
+      }
     } else {
       setSuggestion("");
     }
